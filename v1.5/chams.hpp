@@ -62,12 +62,13 @@ private:
 	i_material* tye_dye{};
 	i_material* materials[8]{};
 
-	hook_data_t hook_data{};
+        hook_data_t hook_data{};
 
-	std::deque<shot_record_t> shots{};
+        std::deque<shot_record_t> shots{};
 
-	bool draw_model(chams_t& chams, matrix3x4_t* matrix = nullptr, float alpha = 1.f, bool xqz = false);
-	bool should_draw();
+        bool draw_model(chams_t& chams, matrix3x4_t* matrix = nullptr, float alpha = 1.f, bool xqz = false);
+        bool draw_fake_local(float alpha);
+        bool should_draw();
 
 public:
 

@@ -283,7 +283,22 @@ bool c_chams::draw_model(chams_t& chams, matrix3x4_t* matrix, float alpha, bool 
 		return true;
 	}
 
-	return false;
+        return false;
+}
+
+bool c_chams::draw_fake_local(float alpha)
+{
+        auto local_anim = ANIMFIX->get_local_anims();
+        if (!local_anim || !g_cfg.visuals.chams[c_fake].enable)
+                return false;
+
+        const auto& render_origin = HACKS->local->get_render_origin();
+
+        math::change_bones_position(local_anim->matrix, 128, {}, render_origin);
+        bool result = this->draw_model(g_cfg.visuals.chams[c_fake], local_anim->matrix, alpha, true);
+        math::change_bones_position(local_anim->matrix, 128, render_origin, {});
+
+        return result;
 }
 
 bool c_chams::should_draw()
@@ -326,18 +341,20 @@ bool c_chams::should_draw()
 		if (!player->is_alive() || player->has_gun_game_immunity() || player->dormant())
 			return false;
 
-		if (player == HACKS->local)
-		{
-			if (!HACKS->input->camera_in_third_person)
-				return false;
+                if (player == HACKS->local)
+                {
+                        if (!HACKS->input->camera_in_third_person)
+                                return false;
 
-			auto alpha = 1.f;
-			if (HACKS->local->is_scoped() || HACKS->weapon && HACKS->weapon->is_grenade())
-				alpha *= MODEL_BLEND_FACTOR;
+                        auto alpha = 1.f;
+                        if (HACKS->local->is_scoped() || HACKS->weapon && HACKS->weapon->is_grenade())
+                                alpha *= MODEL_BLEND_FACTOR;
 
-			HACKS->render_view->set_blend(alpha);
-			return this->draw_model(g_cfg.visuals.chams[c_local], nullptr, alpha);
-		}
+                        this->draw_fake_local(alpha);
+
+                        HACKS->render_view->set_blend(alpha);
+                        return this->draw_model(g_cfg.visuals.chams[c_local], nullptr, alpha);
+                }
 		else
 		{
 			if (player->is_teammate(false))
