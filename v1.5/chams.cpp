@@ -138,17 +138,30 @@ void c_chams::init_materials()
 	)#"),
 	CXOR("VertexLitGeneric"));
 
-	materials[7] = create_material(CXOR("csgo_fadeup"), CXOR(R"#("VertexLitGeneric"
-	{
-		"$baseTexture"            "vgui/white"
-		"$basemapalphaphongmask"  "1"
+        materials[7] = create_material(CXOR("csgo_fadeup"), CXOR(R"#("VertexLitGeneric"
+        {
+                "$baseTexture"            "vgui/white"
+                "$basemapalphaphongmask"  "1"
 
 		"$envmap"                 "env_cubemap"
 		"$envmapfresnel"          "1"
 		"$envmaptint" 	          "[.2 .2 .2]"
 	}
-	)#"),
-	CXOR("VertexLitGeneric"));
+        )#"),
+        CXOR("VertexLitGeneric"));
+
+        materials[8] = create_material(CXOR("csgo_flow"), CXOR(R"#("VertexLitGeneric"
+        {
+                "$basetexture" "vgui/white"
+                "$additive" "1"
+                "$envmap" "models/effects/cube_white"
+                "$envmaptint" "[1 1 1]"
+                "$envmapfresnel" "1"
+                "$envmapfresnelminmaxexp" "[0 1 2]"
+                "$alpha" "0.8"
+        }
+        )#"),
+        CXOR("VertexLitGeneric"));
 
 	tye_dye = create_material(CXOR("csgo_tye_dye"), CXOR(R"#("VertexLitGeneric"
       {

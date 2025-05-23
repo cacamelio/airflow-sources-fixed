@@ -60,7 +60,7 @@ private:
 	std::string old_base_texture{};
 
 	i_material* tye_dye{};
-	i_material* materials[8]{};
+        i_material* materials[9]{};
 
         hook_data_t hook_data{};
 
