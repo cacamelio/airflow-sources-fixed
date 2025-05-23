@@ -257,6 +257,16 @@ void c_menu::draw_tabs()
 
                auto tab_str = CXOR("##tab_") + std::to_string(i);
                info.selected = ImGui::ButtonEx(tab_str.c_str(), ImVec2(tab_width - 13.f, 32), 0, &info.hovered);
+        const float tab_width = 95.f;
+        for (int i = 0; i < tabs.size(); ++i)
+        {
+                auto& info = tab_info[i];
+
+                ImGui::SetCursorPos(ImVec2(20.f + tab_width * i, 60.f));
+
+                auto tab_str = CXOR("##tab_") + std::to_string(i);
+                info.selected = ImGui::ButtonEx(tab_str.c_str(), ImVec2(tab_width - 5.f, 32), 0, &info.hovered);
+          
 		if (info.selected)
 			tab_selector = i;
 
