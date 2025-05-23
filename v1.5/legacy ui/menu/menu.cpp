@@ -225,8 +225,8 @@ void c_menu::draw_ui_background()
 	// header end (separator)
 	list->AddLine(window_pos + ImVec2(0, 46), window_pos + ImVec2(720, 46), c_color(255, 255, 255, 12.75f * alpha).as_imcolor());
 
-	// tab separator
-	list->AddLine(window_pos + ImVec2(160, 47), window_pos + ImVec2(160, 520), c_color(255, 255, 255, 12.75f * alpha).as_imcolor(), 1.f);
+        // tab separator moved to top
+        list->AddLine(window_pos + ImVec2(0, 90), window_pos + ImVec2(720, 90), c_color(255, 255, 255, 12.75f * alpha).as_imcolor(), 1.f);
 
 	// border
 	list->AddRect(window_pos, ImVec2(window_pos.x + 720, window_pos.y + 520), c_color(100, 100, 100, 100.f * alpha).as_imcolor(), 6.f);
@@ -248,22 +248,23 @@ void c_menu::draw_tabs()
 
 	auto clr = g_cfg.misc.ui_color.base();
 
-	for (int i = 0; i < tabs.size(); ++i)
-	{
-		auto& info = tab_info[i];
+       const float tab_width = 95.f;
+       for (int i = 0; i < tabs.size(); ++i)
+       {
+               auto& info = tab_info[i];
 
-		ImGui::SetCursorPos(ImVec2(53, 78 + 40 * i));
+               ImGui::SetCursorPos(ImVec2(8.f + tab_width * i, 63.f));
 
-		auto tab_str = CXOR("##tab_") + std::to_string(i);
-		info.selected = ImGui::ButtonEx(tab_str.c_str(), ImVec2(144, 32), 0, &info.hovered);
+               auto tab_str = CXOR("##tab_") + std::to_string(i);
+               info.selected = ImGui::ButtonEx(tab_str.c_str(), ImVec2(tab_width - 13.f, 32), 0, &info.hovered);
 		if (info.selected)
 			tab_selector = i;
 
 		this->create_animation(info.hovered_alpha, info.hovered, 1.f, lerp_animation);
 		this->create_animation(info.alpha, tab_selector == i, 0.8f, skip_disable | lerp_animation);
 
-		auto tab_min = ImVec2(8, 14 + 40 * i);
-		auto tab_max = ImVec2(152, 46 + 40 * i);
+                auto tab_min = ImVec2(8 + tab_width * i, 14);
+                auto tab_max = ImVec2(8 + tab_width * i + tab_width - 13.f, 46);
 
 		auto tab_pos_min = child_pos + tab_min;
 		auto tab_pos_max = child_pos + tab_max;
@@ -298,7 +299,7 @@ void c_menu::draw_sub_tabs(int& selector, const std::vector< std::string >& tabs
 	auto& style = ImGui::GetStyle();
 	auto alpha = this->get_alpha();
 	auto window_alpha = 255.f * alpha;
-	auto child_pos = this->get_window_pos() + ImVec2(178, 62);
+        auto child_pos = this->get_window_pos() + ImVec2(18, 62);
 	auto prev_pos = ImGui::GetCursorPos();
 
 	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
@@ -306,7 +307,7 @@ void c_menu::draw_sub_tabs(int& selector, const std::vector< std::string >& tabs
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0, 0, 0, 0));
 	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.f, 1.f, 1.f, this->get_alpha()));
 
-	draw_list->AddRectFilled(child_pos, child_pos + ImVec2(528, 58), c_color(217, 217, 217, 20 * alpha).as_imcolor(), 4.f);
+        draw_list->AddRectFilled(child_pos, child_pos + ImVec2(684, 58), c_color(217, 217, 217, 20 * alpha).as_imcolor(), 4.f);
 
 	auto clr = g_cfg.misc.ui_color.base();
 
@@ -362,8 +363,8 @@ void c_menu::draw_sub_tabs(int& selector, const std::vector< std::string >& tabs
 	// spacing for tab elements
 	ImGui::ItemSize(ImVec2(0, 62));
 
-	ImGui::PushClipRect(child_pos + ImVec2(0.f, 62.f), child_pos + ImVec2(540, 457), false);
-	draw_list->PushClipRect(child_pos + ImVec2(0.f, 62.f), child_pos + ImVec2(540, 457));
+        ImGui::PushClipRect(child_pos + ImVec2(0.f, 62.f), child_pos + ImVec2(696, 457), false);
+        draw_list->PushClipRect(child_pos + ImVec2(0.f, 62.f), child_pos + ImVec2(696, 457));
 }
 
 std::vector< Snowflake::Snowflake > snow;

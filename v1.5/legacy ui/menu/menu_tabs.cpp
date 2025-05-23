@@ -590,12 +590,12 @@ void c_menu::draw_ui_items()
 	auto window_pos = get_window_pos();
 	auto prev_pos = ImGui::GetCursorPos();
 
-	auto new_pos = ImVec2(215, 77);
+        auto new_pos = ImVec2(55, 77);
 	ImGui::SetCursorPos(new_pos);
 
 	auto list = get_draw_list();
 
-	ImRect window_bb = ImRect(window_pos + ImVec2(160, 47), window_pos + ImVec2(725, 520));
+        ImRect window_bb = ImRect(window_pos + ImVec2(0, 47), window_pos + ImVec2(720, 520));
 	ImGui::PushClipRect(window_bb.Min, window_bb.Max, false);
 
 	float old_alpha = get_alpha();
