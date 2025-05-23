@@ -291,6 +291,7 @@ const char* vis_chams_type[] =
 	xor_strs::vis_chams_bubble.c_str(),
 	xor_strs::vis_chams_money.c_str(),
 	xor_strs::vis_chams_fadeup.c_str(),
+        xor_strs::vis_chams_flow.c_str(),
 };
 
 const char* buybot_main[]
@@ -564,7 +565,7 @@ const char* glove_skins[]
 	xor_strs::glove_skin_rattler.c_str(),
 	xor_strs::glove_skin_case.c_str(),
 	xor_strs::glove_skin_crimson_web.c_str(),
-	xor_strs::glove_skin_buñkshot.c_str(),
+	xor_strs::glove_skin_buÃ±kshot.c_str(),
 	xor_strs::glove_skin_fade.c_str(),
 	xor_strs::glove_skin_mogul.c_str(),
 };
