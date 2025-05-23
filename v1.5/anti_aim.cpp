@@ -271,96 +271,48 @@ void c_anti_aim::freestanding()
 	if (!g_cfg.binds[freestand_b].toggled || !MOVEMENT->on_ground() || g_cfg.binds[left_b].toggled || g_cfg.binds[right_b].toggled || g_cfg.binds[back_b].toggled)
 		return;
 
-	auto player = get_closest_player();
-	if (!player)
-		return;
 
-	auto weapon = (c_base_combat_weapon*)(HACKS->entity_list->get_client_entity_handle(player->active_weapon()));
-	if (!weapon)
-		return;
+       auto player = get_closest_player();
+       if (!player)
+               return;
 
-	auto weapon_info = HACKS->weapon_system->get_weapon_data(weapon->item_definition_index());
-	if (!weapon_info)
-		return;
+       auto anim = ANIMFIX->get_local_anims();
+       if (!anim)
+               return;
 
-	static float auto_dir{}, auto_dist{};
+       // calculate the angle to the enemy and build test positions
+       vec3_t eye_pos = anim->eye_pos;
+       vec3_t target_eye = player->get_eye_position();
 
-	auto update_dir = [&]()
-	{
-		constexpr float STEP{ 4.f };
-		constexpr float RANGE{ 20.f };
+       auto angle_to_enemy = math::calc_angle(eye_pos, target_eye);
 
-		auto anim = ANIMFIX->get_local_anims();
+       constexpr float OFFSET = 32.f;
 
-		std::vector< c_adaptive_angle > angles{ };
-		angles.emplace_back(best_yaw - 180.f);
-		angles.emplace_back(best_yaw - 90.f);
-		angles.emplace_back(best_yaw + 90.f);
+       auto left_pos = eye_pos;
+       auto right_pos = eye_pos;
 
-		vec3_t start = player->get_eye_position();
-		bool valid{ false };
+       left_pos.x += std::cos(DEG2RAD(angle_to_enemy.y + 90.f)) * OFFSET;
+       left_pos.y += std::sin(DEG2RAD(angle_to_enemy.y + 90.f)) * OFFSET;
 
-		for (auto it = angles.begin(); it != angles.end(); ++it) 
-		{
-			vec3_t end { 
-				anim->eye_pos.x + std::cos(DEG2RAD(it->yaw)) * RANGE,
-				anim->eye_pos.y + std::sin(DEG2RAD(it->yaw)) * RANGE,
-				anim->eye_pos.z 
-			};
+       right_pos.x += std::cos(DEG2RAD(angle_to_enemy.y - 90.f)) * OFFSET;
+       right_pos.y += std::sin(DEG2RAD(angle_to_enemy.y - 90.f)) * OFFSET;
 
-			vec3_t dir = end - start;
-			float len = dir.normalized_float();
+       // run a simplified penetration check from the enemy to both points
+       auto left_dmg = penetration::simulate(player, HACKS->local, target_eye, left_pos, false, true).damage;
+       auto right_dmg = penetration::simulate(player, HACKS->local, target_eye, right_pos, false, true).damage;
 
-			if (len <= 0.f)
-				continue;
-
-			for (float i{ 0.f }; i < len; i += STEP) 
-			{
-				vec3_t point = start + (dir * i);
-				int contents = HACKS->engine_trace->get_point_contents(point, MASK_SHOT_HULL);
-				if (!(contents & MASK_SHOT_HULL))
-					continue;
-
-				float mult = 1.f;
-				if (i > (len * 0.5f))
-					mult = 1.25f;
-
-				if (i > (len * 0.75f))
-					mult = 1.25f;
-
-				if (i > (len * 0.9f))
-					mult = 2.f;
-
-				it->distance += (STEP * mult);
-
-				valid = true;
-			}
-		}
-
-		if (!valid) 
-		{
-			auto_dir = math::normalize_yaw(best_yaw - 180.f);
-			auto_dist = -1.f;
-			return;
-		}
-
-		std::sort(angles.begin(), angles.end(),
-			[](const c_adaptive_angle& a, const c_adaptive_angle& b) {
-				return a.distance > b.distance;
-			});
-
-		c_adaptive_angle* best = &angles.front();
-
-		if (best->distance != auto_dist) 
-		{
-			auto_dir = math::normalize_yaw(best->yaw);
-			auto_dist = best->distance;
-		}
-	};
-
-	update_dir();
-
-	best_yaw = math::normalize_yaw(auto_dir - 180.f);
+       if (left_dmg == right_dmg)
+       {
+               best_yaw = math::normalize_yaw(angle_to_enemy.y + 180.f);
+       }
+       else if (left_dmg > right_dmg)
+       {
+               best_yaw = math::normalize_yaw(angle_to_enemy.y + 90.f);
+       }
+       else
+       {
+               best_yaw = math::normalize_yaw(angle_to_enemy.y - 90.f);
+       }
 }
 
 void c_anti_aim::at_targets()
