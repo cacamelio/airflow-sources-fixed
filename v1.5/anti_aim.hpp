@@ -58,6 +58,7 @@ private:
 	void freestanding();
 	void at_targets();
 
+    static bool extend_pitch_roll(const c_usercmd* latest_cmd, int command_extend_limit_cfg, int& out_extended_cmd_count, const vector3d& target_angles, int base_command_number, int base_tick_count);
 public:
 	INLINE void reset()
 	{

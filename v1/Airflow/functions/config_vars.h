@@ -302,6 +302,11 @@ struct configs_t
 
 		bool jitter_move{};
 		bool silent_onshot{};
+
+		bool pitch_roll_enable{};
+		int pitch_roll_pitch_mode{}; // 0: None, 1: Down (89), 2: Up (-89), 3: Zero (0)
+		float pitch_roll_roll{};
+		int pitch_roll_command_extend_limit{};
 	} antihit;
 
 	struct visuals_t
