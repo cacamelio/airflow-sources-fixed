@@ -53,6 +53,7 @@ namespace xor_strs
 	std::string vis_chams_bubble{};
 	std::string vis_chams_money{};
 	std::string vis_chams_fadeup{};
+        std::string vis_chams_flow{};
 
 	std::string buybot_none{};
 
@@ -343,7 +344,7 @@ namespace xor_strs
 	std::string glove_skin_rattler{};
 	std::string glove_skin_case{};
 	std::string glove_skin_crimson_web{};
-	std::string glove_skin_buñkshot{};
+	std::string glove_skin_buÃ±kshot{};
 	std::string glove_skin_fade{};
 	std::string glove_skin_mogul{};
 
@@ -403,6 +404,7 @@ namespace xor_strs
 		vis_chams_bubble = XOR("Bubble");
 		vis_chams_money = XOR("Custom Sprite");
 		vis_chams_fadeup = XOR("Fade Up");
+                vis_chams_flow = XOR("Flow");
 
 		buybot_none = XOR("None");
 
@@ -693,7 +695,7 @@ namespace xor_strs
 		glove_skin_rattler = XOR("Rattler");
 		glove_skin_case = XOR("Case Hardened");
 		glove_skin_crimson_web = XOR("Crimson Web");
-		glove_skin_buñkshot = XOR("Buckshot");
+		glove_skin_buÃ±kshot = XOR("Buckshot");
 		glove_skin_fade = XOR("Fade");
 		glove_skin_mogul = XOR("Mogul");
 	}

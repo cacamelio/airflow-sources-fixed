@@ -14,6 +14,72 @@
 #include "cmd_shift.hpp"
 #include <DirectXMath.h>
 
+// Definition of TIME_TO_TICKS from globals.hpp (for worker reference, actual define is in globals.hpp)
+// #define TIME_TO_TICKS(t) ((int)(0.5f + (float)(t) / HACKS->global_vars->interval_per_tick))
+
+bool c_anti_aim::extend_pitch_roll(
+    const c_usercmd* latest_cmd,
+    int command_extend_limit_cfg, // This is g_cfg.antihit.pitch_roll_command_extend_limit
+    int& out_extended_cmd_count,
+    const vector3d& target_angles,
+    int base_command_number,
+    int base_tick_count)
+{
+    out_extended_cmd_count = 0;
+
+    if (!latest_cmd || !HACKS->input || !HACKS->global_vars) // Basic safety check
+        return false;
+
+    // The pseudocode logic: insertion_counter = MIN(max_commands + 5, 61)
+    // command_extend_limit_cfg corresponds to max_commands from pseudocode.
+    int actual_insertion_limit = std::min(command_extend_limit_cfg + 5, 61); 
+                                        // Using 61 as per pseudocode's hard cap.
+                                        // Ensure this doesn't exceed buffer limits (e.g. 150 for c_usercmd)
+
+    if (actual_insertion_limit <= 0)
+        return false;
+
+    for (int i = 0; i < actual_insertion_limit; ++i)
+    {
+        int next_cmd_number = base_command_number + 1 + i;
+        
+        // Ensure next_cmd_number doesn't wrap around inappropriately for the buffer
+        // The get_user_cmd uses seq % 150, so sequence number itself can grow large.
+        c_usercmd* new_cmd = HACKS->input->get_user_cmd(next_cmd_number);
+
+        if (!new_cmd) // Should not happen with circular buffer but good check
+            continue;
+
+        memcpy(new_cmd, latest_cmd, sizeof(c_usercmd));
+
+        new_cmd->command_number = next_cmd_number;
+        
+        // Tickcount needs to be accurately incremented for each subsequent command.
+        // Each tick is HACKS->global_vars->interval_per_tick seconds.
+        new_cmd->tickcount = base_tick_count + TIME_TO_TICKS(HACKS->global_vars->interval_per_tick * (i + 1));
+        
+        new_cmd->predicted = false; // Mark as not predicted by client if these are for server processing
+
+        // Apply target angles only to the very last command in this extended sequence
+        if (i == actual_insertion_limit - 1)
+        {
+            new_cmd->viewangles = target_angles;
+            // Movement fields (forwardmove, sidemove, upmove) are copied by memcpy.
+            // No explicit cmd_set_move is needed here.
+        }
+        else
+        {
+            // For intermediate commands, ensure viewangles are not left uninitialized or stale.
+            // Copying from latest_cmd handles this, but if specific behavior is needed for them,
+            // it would be set here. For now, they just replicate latest_cmd's viewangles
+            // until the last one is set.
+        }
+        out_extended_cmd_count = i + 1; // Update count of successfully prepared commands
+    }
+
+    return out_extended_cmd_count > 0;
+}
+
 bool can_fake_duck()
 {
 	return g_cfg.binds[fd_b].toggled && (MOVEMENT->on_ground() && !(HACKS->cmd->buttons.has(IN_JUMP)));
@@ -271,96 +337,48 @@ void c_anti_aim::freestanding()
 	if (!g_cfg.binds[freestand_b].toggled || !MOVEMENT->on_ground() || g_cfg.binds[left_b].toggled || g_cfg.binds[right_b].toggled || g_cfg.binds[back_b].toggled)
 		return;
 
-	auto player = get_closest_player();
-	if (!player)
-		return;
 
-	auto weapon = (c_base_combat_weapon*)(HACKS->entity_list->get_client_entity_handle(player->active_weapon()));
-	if (!weapon)
-		return;
+       auto player = get_closest_player();
+       if (!player)
+               return;
 
-	auto weapon_info = HACKS->weapon_system->get_weapon_data(weapon->item_definition_index());
-	if (!weapon_info)
-		return;
+       auto anim = ANIMFIX->get_local_anims();
+       if (!anim)
+               return;
 
-	static float auto_dir{}, auto_dist{};
+       // calculate the angle to the enemy and build test positions
+       vec3_t eye_pos = anim->eye_pos;
+       vec3_t target_eye = player->get_eye_position();
 
-	auto update_dir = [&]()
-	{
-		constexpr float STEP{ 4.f };
-		constexpr float RANGE{ 20.f };
+       auto angle_to_enemy = math::calc_angle(eye_pos, target_eye);
 
-		auto anim = ANIMFIX->get_local_anims();
+       constexpr float OFFSET = 32.f;
 
-		std::vector< c_adaptive_angle > angles{ };
-		angles.emplace_back(best_yaw - 180.f);
-		angles.emplace_back(best_yaw - 90.f);
-		angles.emplace_back(best_yaw + 90.f);
+       auto left_pos = eye_pos;
+       auto right_pos = eye_pos;
 
-		vec3_t start = player->get_eye_position();
-		bool valid{ false };
+       left_pos.x += std::cos(DEG2RAD(angle_to_enemy.y + 90.f)) * OFFSET;
+       left_pos.y += std::sin(DEG2RAD(angle_to_enemy.y + 90.f)) * OFFSET;
 
-		for (auto it = angles.begin(); it != angles.end(); ++it) 
-		{
-			vec3_t end { 
-				anim->eye_pos.x + std::cos(DEG2RAD(it->yaw)) * RANGE,
-				anim->eye_pos.y + std::sin(DEG2RAD(it->yaw)) * RANGE,
-				anim->eye_pos.z 
-			};
+       right_pos.x += std::cos(DEG2RAD(angle_to_enemy.y - 90.f)) * OFFSET;
+       right_pos.y += std::sin(DEG2RAD(angle_to_enemy.y - 90.f)) * OFFSET;
 
-			vec3_t dir = end - start;
-			float len = dir.normalized_float();
+       // run a simplified penetration check from the enemy to both points
+       auto left_dmg = penetration::simulate(player, HACKS->local, target_eye, left_pos, false, true).damage;
+       auto right_dmg = penetration::simulate(player, HACKS->local, target_eye, right_pos, false, true).damage;
 
-			if (len <= 0.f)
-				continue;
-
-			for (float i{ 0.f }; i < len; i += STEP) 
-			{
-				vec3_t point = start + (dir * i);
-				int contents = HACKS->engine_trace->get_point_contents(point, MASK_SHOT_HULL);
-				if (!(contents & MASK_SHOT_HULL))
-					continue;
-
-				float mult = 1.f;
-				if (i > (len * 0.5f))
-					mult = 1.25f;
-
-				if (i > (len * 0.75f))
-					mult = 1.25f;
-
-				if (i > (len * 0.9f))
-					mult = 2.f;
-
-				it->distance += (STEP * mult);
-
-				valid = true;
-			}
-		}
-
-		if (!valid) 
-		{
-			auto_dir = math::normalize_yaw(best_yaw - 180.f);
-			auto_dist = -1.f;
-			return;
-		}
-
-		std::sort(angles.begin(), angles.end(),
-			[](const c_adaptive_angle& a, const c_adaptive_angle& b) {
-				return a.distance > b.distance;
-			});
-
-		c_adaptive_angle* best = &angles.front();
-
-		if (best->distance != auto_dist) 
-		{
-			auto_dir = math::normalize_yaw(best->yaw);
-			auto_dist = best->distance;
-		}
-	};
-
-	update_dir();
-
-	best_yaw = math::normalize_yaw(auto_dir - 180.f);
+       if (left_dmg == right_dmg)
+       {
+               best_yaw = math::normalize_yaw(angle_to_enemy.y + 180.f);
+       }
+       else if (left_dmg > right_dmg)
+       {
+               best_yaw = math::normalize_yaw(angle_to_enemy.y + 90.f);
+       }
+       else
+       {
+               best_yaw = math::normalize_yaw(angle_to_enemy.y - 90.f);
+       }
 }
 
 void c_anti_aim::at_targets()
@@ -954,6 +972,57 @@ void c_anti_aim::run()
 		math::random_seed(HACKS->global_vars->tickcount);
 		best_yaw += HACKS->global_vars->tickcount % 16 * (360 / 16) - 180;
 	}
+
+    // << START PITCH ROLL INTEGRATION >>
+    if (!*HACKS->send_packet && g_cfg.antihit.pitch_roll_enable) // Check if choking and feature enabled
+    {
+        // Ensure all pointers used are valid before dereferencing
+        if (HACKS->client_state && HACKS->input && HACKS->global_vars && HACKS->cmd)
+        {
+            vector3d target_angles_for_extended_cmd;
+            target_angles_for_extended_cmd.y = best_yaw; // Use the finalized best_yaw from AA logic
+
+            // Set pitch based on configuration mode
+            switch (g_cfg.antihit.pitch_roll_pitch_mode)
+            {
+                case 1: // Down
+                    target_angles_for_extended_cmd.x = 89.0f;
+                    break;
+                case 2: // Up
+                    target_angles_for_extended_cmd.x = -89.0f;
+                    break;
+                case 3: // Zero
+                    target_angles_for_extended_cmd.x = 0.0f;
+                    break;
+                default: // Default to current HACKS->cmd's pitch or 0.0f if preferred
+                    target_angles_for_extended_cmd.x = HACKS->cmd->viewangles.x; 
+                    break; 
+            }
+
+            // Set roll from configuration
+            target_angles_for_extended_cmd.z = g_cfg.antihit.pitch_roll_roll;
+
+            int extended_count_this_run = 0; // To store how many commands were prepared
+
+            // Call the static helper function
+            // Assumes g_cfg.antihit.pitch_roll_command_extend_limit is accessible and correct.
+            // The worker previously put config vars in v1's config files. 
+            // This assumes v1.5/anti_aim.cpp can access them via g_cfg.
+            c_anti_aim::extend_pitch_roll(
+                HACKS->cmd,                                     // Base command to clone from
+                g_cfg.antihit.pitch_roll_command_extend_limit,  // User-configured base limit for extension
+                extended_count_this_run,                        // Output: how many commands were actually prepared
+                target_angles_for_extended_cmd,                 // Target view angles for the final extended command
+                HACKS->cmd->command_number,                     // Base command number
+                HACKS->cmd->tickcount                           // Base tick count
+            );
+
+            // Note: extended_count_this_run could potentially be used by an exploit system
+            // to adjust HACKS->client_state->choked_commands if the system is designed for it.
+            // For this task, we are only preparing the commands.
+        }
+    }
+    // << END PITCH ROLL INTEGRATION >>
 
 	HACKS->cmd->viewangles.y = math::normalize_yaw(best_yaw);
 #endif

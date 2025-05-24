@@ -301,6 +301,11 @@ namespace config
 			save_int(antihit, xor_c("distortion_pitch"), default_config.antihit.distortion_pitch);
 			save_int(antihit, xor_c("fakelag_limit"), default_config.antihit.fakelag_limit);
 			save_uint(antihit, xor_c("fakelag_conditions"), default_config.antihit.fakelag_conditions);
+
+			save_bool(antihit, xor_c("pitch_roll_enable"), default_config.antihit.pitch_roll_enable);
+			save_int(antihit, xor_c("pitch_roll_pitch_mode"), default_config.antihit.pitch_roll_pitch_mode);
+			save_float(antihit, xor_c("pitch_roll_roll"), default_config.antihit.pitch_roll_roll);
+			save_int(antihit, xor_c("pitch_roll_command_extend_limit"), default_config.antihit.pitch_roll_command_extend_limit);
 		}
 
 		auto& visuals = json_obj[xor_c("visuals")];
@@ -629,6 +634,11 @@ namespace config
 			save_int(antihit, xor_c("distortion_pitch"), g_cfg.antihit.distortion_pitch);
 			save_int(antihit, xor_c("fakelag_limit"), g_cfg.antihit.fakelag_limit);
 			save_uint(antihit, xor_c("fakelag_conditions"), g_cfg.antihit.fakelag_conditions);
+
+			save_bool(antihit, xor_c("pitch_roll_enable"), g_cfg.antihit.pitch_roll_enable);
+			save_int(antihit, xor_c("pitch_roll_pitch_mode"), g_cfg.antihit.pitch_roll_pitch_mode);
+			save_float(antihit, xor_c("pitch_roll_roll"), g_cfg.antihit.pitch_roll_roll);
+			save_int(antihit, xor_c("pitch_roll_command_extend_limit"), g_cfg.antihit.pitch_roll_command_extend_limit);
 		}
 
 		auto& visuals = json_obj[xor_c("visuals")];
@@ -968,6 +978,11 @@ namespace config
 			load_int(antihit, xor_c("distortion_pitch"), g_cfg.antihit.distortion_pitch);
 			load_int(antihit, xor_c("fakelag_limit"), g_cfg.antihit.fakelag_limit);
 			load_uint(antihit, xor_c("fakelag_conditions"), g_cfg.antihit.fakelag_conditions);
+
+			load_bool(antihit, xor_c("pitch_roll_enable"), g_cfg.antihit.pitch_roll_enable);
+			load_int(antihit, xor_c("pitch_roll_pitch_mode"), g_cfg.antihit.pitch_roll_pitch_mode);
+			load_float(antihit, xor_c("pitch_roll_roll"), g_cfg.antihit.pitch_roll_roll);
+			load_int(antihit, xor_c("pitch_roll_command_extend_limit"), g_cfg.antihit.pitch_roll_command_extend_limit);
 		}
 
 		auto& visuals = json_obj[xor_c("visuals")];

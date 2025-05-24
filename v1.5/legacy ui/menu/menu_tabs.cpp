@@ -291,6 +291,7 @@ const char* vis_chams_type[] =
 	xor_strs::vis_chams_bubble.c_str(),
 	xor_strs::vis_chams_money.c_str(),
 	xor_strs::vis_chams_fadeup.c_str(),
+        xor_strs::vis_chams_flow.c_str(),
 };
 
 const char* buybot_main[]
@@ -564,7 +565,7 @@ const char* glove_skins[]
 	xor_strs::glove_skin_rattler.c_str(),
 	xor_strs::glove_skin_case.c_str(),
 	xor_strs::glove_skin_crimson_web.c_str(),
-	xor_strs::glove_skin_buñkshot.c_str(),
+	xor_strs::glove_skin_buÃ±kshot.c_str(),
 	xor_strs::glove_skin_fade.c_str(),
 	xor_strs::glove_skin_mogul.c_str(),
 };
@@ -589,12 +590,12 @@ void c_menu::draw_ui_items()
 	auto window_pos = get_window_pos();
 	auto prev_pos = ImGui::GetCursorPos();
 
-	auto new_pos = ImVec2(215, 77);
+        auto new_pos = ImVec2(55, 77);
 	ImGui::SetCursorPos(new_pos);
 
 	auto list = get_draw_list();
 
-	ImRect window_bb = ImRect(window_pos + ImVec2(160, 47), window_pos + ImVec2(725, 520));
+        ImRect window_bb = ImRect(window_pos + ImVec2(0, 47), window_pos + ImVec2(720, 520));
 	ImGui::PushClipRect(window_bb.Min, window_bb.Max, false);
 
 	float old_alpha = get_alpha();
