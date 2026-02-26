@@ -20,11 +20,9 @@ void c_glow::run()
 			switch (class_id)
 			{
 			case CBaseCSGrenadeProjectile:
-#ifndef LEGACY
 			case CBreachChargeProjectile:
 			case CBumpMineProjectile:
 			case CSnowballProjectile:
-#endif
 			case CDecoyProjectile:
 			case CMolotovProjectile:
 			case CSensorGrenadeProjectile:

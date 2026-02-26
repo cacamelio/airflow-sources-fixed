@@ -35,11 +35,7 @@ void c_hacks::init_interfaces()
 	global_vars			= **offsets::global_vars.cast<c_global_vars***>();
 	view_render			= **offsets::view_render.cast<c_view_render***>();
 
-#ifdef LEGACY
-	glow_object_manager = offsets::glow_object_manager.cast<c_glow_object_manager*(__cdecl*)()>()();
-#else
 	glow_object_manager = *offsets::glow_object_manager.cast<c_glow_object_manager**>();
-#endif
 	d3d_device			= **offsets::d3d_device.cast<c_d3d_device***>();
 	weapon_system		= *offsets::weapon_system.cast<c_weapon_system**>();
 	view_render_beams	= *offsets::view_render_beams.cast<c_view_render_beams**>();

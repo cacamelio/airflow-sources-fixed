@@ -198,11 +198,7 @@ namespace penetration
 
 				if (exit_trace->start_solid && exit_trace->surface.flags & SURF_HITBOX)
 				{
-#ifdef LEGACY
-					c_trace_filter_simple filter(player);
-#else
 					c_trace_filter_skip_two_entities filter(player, exit_trace->entity);
-#endif
 					HACKS->engine_trace->trace_ray(ray_t(start, new_start), MASK_SHOT_PLAYER, (i_trace_filter*)&filter, exit_trace);
 
 					if (exit_trace->did_hit() && !exit_trace->start_solid)

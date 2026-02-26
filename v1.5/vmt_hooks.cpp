@@ -904,11 +904,6 @@ namespace hooks::vmt
 		original(ecx, edx, player, cmd, move_helper);
 		ENGINE_PREDICTION->update_viewmodel_info(cmd);
 		PREDFIX->store(cmd->command_number);
-
-#ifdef LEGACY
-		static auto collision_state = netvars::get_offset(HASH("DT_CSPlayer"), HASH("m_vphysicsCollisionState"));
-		*(int*)((std::uintptr_t)player + collision_state) = 0;
-#endif
 	}
 
 	void __fastcall emit_sound(void* thisptr, void* edx, void* filter, int ent_index, int channel, const char* sound_entry, unsigned int sound_entry_hash,
@@ -962,7 +957,6 @@ namespace hooks::vmt
 	}
 
 
-#ifndef LEGACY
 	void* __fastcall alloc_key_values_memory(c_key_values_system* ecx, int edx, int size)
 	{
 		static auto original = hooker::get_original(&alloc_key_values_memory);
@@ -973,7 +967,6 @@ namespace hooks::vmt
 
 		return original(ecx, edx, size);
 	}
-#endif
 
 	INLINE void init()
 	{
@@ -1021,8 +1014,6 @@ namespace hooks::vmt
 
 		hooker::add_detour(memory::get_virtual(HACKS->prediction, XORN(RUN_COMMAND_IDX)).cast<std::uint64_t>(), run_command);
 
-#ifndef LEGACY
 		hooker::add_detour(memory::get_virtual(HACKS->key_values_system, XORN(ALLOC_KEY_VALUES_IDX)).cast<std::uint64_t>(), alloc_key_values_memory);
-#endif
 	}
 }

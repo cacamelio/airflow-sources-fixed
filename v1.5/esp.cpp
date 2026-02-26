@@ -315,13 +315,11 @@ void c_esp::draw_weapon_esp()
 			break;
 			}
 
-#ifndef LEGACY
 			if (entity->nade_exploded() && !esp.did_smoke && class_id != CInferno)
 			{
 				esp.reset();
 				return;
 			}
-#endif
 
 			if ((esp_config.elements & 16) && class_id == CInferno)
 				draw_molotov_range(weapon_alpha, esp, entity);

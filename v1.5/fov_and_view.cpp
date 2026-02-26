@@ -88,9 +88,5 @@ void c_fov_and_view::change_fov_dead_and_remove_recoil(c_view_setup* setup)
 		setup->angles -= HACKS->local->aim_punch_angle() * 0.9f + HACKS->local->view_punch_angle();
 
 	if (HACKS->weapon_info && HACKS->weapon)
-#ifdef LEGACY
-		*(bool*)((uintptr_t)HACKS->weapon_info + XORN(0x01BD)) = !g_cfg.misc.viewmodel_scope;
-#else
 		HACKS->weapon_info->hide_viewmodel_in_zoom = !g_cfg.misc.viewmodel_scope;
-#endif
 }

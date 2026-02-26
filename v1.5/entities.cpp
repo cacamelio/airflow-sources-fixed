@@ -129,11 +129,7 @@ void c_cs_player::run_pre_think()
 
 void c_cs_player::run_think()
 {
-#ifdef LEGACY
-	const auto next_think = (int*)((std::uintptr_t)this + XORN(0xF8));
-#else
 	const auto next_think = (int*)((std::uintptr_t)this + XORN(0xFC));
-#endif
 
 	static auto think = offsets::think.cast<void(__thiscall*)(void*, int)>();
 
@@ -230,11 +226,7 @@ void c_cs_player::force_update_animations(anims_t* anim)
 
 			anim->update_anims = false;
 
-#ifdef LEGACY
-			auto animation_time = this == HACKS->local ? TICKS_TO_TIME(HACKS->tickbase) : this->old_sim_time() + HACKS->global_vars->interval_per_tick;
-#else
 			auto animation_time = this == HACKS->local ? TICKS_TO_TIME(HACKS->tickbase) : this->sim_time();
-#endif
 			auto animation_ticks = this == HACKS->local ? HACKS->tickbase : TIME_TO_TICKS(animation_time);
 
 			state->player = this;
@@ -243,13 +235,8 @@ void c_cs_player::force_update_animations(anims_t* anim)
 			THREADED_STATE->update(this, state, angles.y, angles.x, animation_time, animation_ticks);
 
 			// update latch interpolated variables & sequence
-#ifdef LEGACY
-			if (*reinterpret_cast<int*>(reinterpret_cast<std::uintptr_t>(this) + XORN(0x28AC)) != -1)
-				memory::get_virtual(this, XORN(107)).cast<void(__thiscall*)(void*, int)>()(this, 1);
-#else
 			if (*reinterpret_cast<int*>(reinterpret_cast<std::uintptr_t>(this) + XORN(0x28C0)) != -1)
 				memory::get_virtual(this, XORN(108)).cast<void(__thiscall*)(void*, int)>()(this, 1);
-#endif
 		}
 	}
 }
@@ -331,11 +318,9 @@ void c_cs_player::setup_uninterpolated_bones(anims_t* anim, matrix3x4_t* matrix)
 	setup_bones(matrix, matrix == nullptr ? -1 : 128, 0x7FF00, curtime);
 	anim->setup_bones = false;
 
-#ifndef LEGACY
 	anim->clamp_bones_in_bbox = true;
 	offsets::clamp_bones_in_bbox.cast<void(__thiscall*)(void*, matrix3x4_t*, int)>()(this, matrix ? matrix : bone_cache().base(), 0x7FF00);
 	anim->clamp_bones_in_bbox = false;
-#endif
 }
 
 vec3_t c_cs_player::get_hitbox_position(int hitbox, matrix3x4_t* matrix)

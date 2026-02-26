@@ -517,11 +517,7 @@ struct configs_t
 
 	std::array< key_binds_t, binds_max > binds = {
 		  key_binds_t{ -1, 1, false, CXOR("Fake duck") },
-#ifdef LEGACY
-		  key_binds_t{ -1, 1, false, CXOR("Fake walk") },
-#else
 		  key_binds_t{ -1, 1, false, CXOR("Slow walk") },
-#endif
 		  key_binds_t{ -1, 2, false, CXOR("Double tap") },
 		  key_binds_t{ -1, 2, false, CXOR("Hide shots") },
 		  key_binds_t{ -1, 2, false, CXOR("Auto peek") },

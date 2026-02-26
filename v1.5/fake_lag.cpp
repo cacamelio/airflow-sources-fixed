@@ -19,21 +19,13 @@ inline bool disable_custom_overrides()
 	if (shifting)
 		return true;
 
-#ifdef LEGACY
-	if (ANTI_AIM->is_fake_ducking() || g_cfg.binds[sw_b].toggled)
-#else
 	if (ANTI_AIM->is_fake_ducking())
-#endif
 		return true;
 
 	if (state->landing)
 		return true;
 
-#ifdef LEGACY
-	if (EXPLOITS->enabled())
-#else
 	if (EXPLOITS->enabled() && !EXPLOITS->reset_dt)
-#endif
 		return true;
 
 	if (g_cfg.antihit.fakelag)
@@ -54,21 +46,13 @@ int c_fake_lag::get_max_choke()
 
 	auto add_ticks = (int)g_cfg.antihit.desync;
 
-#ifdef LEGACY
-	if (ANTI_AIM->is_fake_ducking() || g_cfg.binds[sw_b].toggled)
-#else
 	if (ANTI_AIM->is_fake_ducking())
-#endif
 		return std::clamp(HACKS->max_choke, 0, 14);
 
 	if (state->landing)
 		return add_ticks;
 
-#ifdef LEGACY
-	if (EXPLOITS->enabled())
-#else
 	if (EXPLOITS->enabled() && !EXPLOITS->reset_dt)
-#endif
 		return add_ticks;
 
 	if (g_cfg.antihit.fakelag)
@@ -160,13 +144,7 @@ void c_fake_lag::run()
 
 	int choke_amount = get_choke_amount();
 
-#ifdef LEGACY
-	auto shift = cmd_shift::shifting || EXPLOITS->cl_move.trigger && EXPLOITS->cl_move.shifting;
-
-	if (EXPLOITS->recharge.start || choke_amount == 0 || shift && HACKS->shooting)
-#else
 	if (EXPLOITS->recharge.start || choke_amount == 0 || (shooting || !(HACKS->local->tickbase() % 100)) && !ANTI_AIM->is_fake_ducking())
-#endif
 	{
 		if (!*HACKS->send_packet)
 			*HACKS->send_packet = true;

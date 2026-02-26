@@ -258,13 +258,8 @@ public:
 	NETVAR(owner, int, "DT_BaseEntity", "m_hOwnerEntity");
 	NETVAR(sequence, int&, "DT_BaseAnimating", "m_nSequence");
 
-#ifdef LEGACY
-	OFFSET(move_type, int&, 0x258);
-	OFFSET(grenade_spawn_time, float, 0x29B0);
-#else
 	OFFSET(move_type, int&, 0x25C);
 	OFFSET(grenade_spawn_time, float, 0x2A04);
-#endif
 
 	NETVAR_OFFSET(old_cycle, float&, "DT_BaseAnimating", "m_nSequence", 0x30);
 	NETVAR_OFFSET(old_anim_time, float&, "DT_BaseEntity", "m_flAnimTime", 4);
@@ -332,14 +327,11 @@ public:
 		case CSmokeGrenadeProjectile:
 		case CIncendiaryGrenade:
 		case CInferno:
-
-#ifndef LEGACY
 		case CSnowballProjectile:
 		case CBreachCharge:
 		case CBreachChargeProjectile:
 		case CBumpMine:
 		case CBumpMineProjectile:
-#endif
 			return true;
 			break;
 		}
@@ -416,7 +408,6 @@ public:
 	OFFSET(entity_flags, memory::bits_t&, 0x68);
 	OFFSET(lod_flags, memory::bits_t&, 0xA28);
 
-#ifndef LEGACY
 	OFFSET(jiggle_bones_enabled, bool&, 0x2930);
 	OFFSET(use_new_animstate, bool&, 0x9B14);
 	OFFSET(predictable, bool&, 0x2EE);
@@ -435,23 +426,6 @@ public:
 	OFFSET(cmd_context, cmd_context_t&, 0x350C);
 	OFFSET(animstate, c_animation_state*, 0x9960);
 	OFFSET(animlayers, c_animation_layers*, 0x2990);
-#else
-	OFFSET(jiggle_bones_enabled, bool&, 0x291C);
-	OFFSET(use_new_animstate, bool&, 0x39E1);
-	OFFSET(predictable, bool&, 0x2EA);
-
-	OFFSET(ik_ctx, int&, 0x2570);
-
-	OFFSET(observer_chase_distance, float&, 0x3364);
-	OFFSET(last_bone_setup_time, float&, 0x2914);
-	OFFSET(model_recent_bone_counter, std::uint32_t&, 0x2680);
-
-	OFFSET(bone_cache, c_utl_vector<matrix3x4_t>&, 0x2900);
-
-	OFFSET(cmd_context, cmd_context_t&, 0x34D0);
-	OFFSET(animstate, c_animation_state*, 0x3874);
-	OFFSET(animlayers, c_animation_layers*, 0x2970);
-#endif
 
 	NETVAR_OFFSET(render_angles, vec3_t&, "DT_BasePlayer", "deadflag", 4);
 	NETVAR(aim_punch_angle_vel, vec3_t&, "DT_BasePlayer", "m_aimPunchAngleVel");
@@ -1115,13 +1089,12 @@ public:
 		case CBaseCSGrenadeProjectile:
 			return std::strstr(model->name, XOR("flashbang").c_str()) ? XOR("FLASH") : XOR("HE GRENADE");
 
-#ifndef LEGACY
 		case CBreachChargeProjectile:
 			return XOR("BREACH");
 
 		case CBumpMineProjectile:
 			return XOR("MINE");
-#endif
+
 		case CDecoyGrenade:
 		case CDecoyProjectile:
 			return XOR("DECOY");
@@ -1133,10 +1106,8 @@ public:
 		case CSmokeGrenadeProjectile:
 			return XOR("SMOKE");
 
-#ifndef LEGACY
 		case CSnowballProjectile:
 			return XOR("SNOW");
-#endif
 		}
 		return XOR("UNK");
 	}

@@ -491,17 +491,9 @@ void c_threaded_animstate::update(c_cs_player* player, c_animation_state* state,
 			//player->invalidate_physics_recursive(48);
 		}
 
-#ifdef LEGACY
-		*reinterpret_cast<float*>(reinterpret_cast<std::uintptr_t>(player) + XORN(0xA18)) = 0.f;
-#else
 		*reinterpret_cast<float*>(reinterpret_cast<std::uintptr_t>(player) + XORN(0x286)) = 0.f;
-#endif
 
-#ifdef LEGACY
-		auto& cycle = *reinterpret_cast<float*>(reinterpret_cast<std::uintptr_t>(player) + XORN(0xA14));
-#else
 		auto& cycle = *reinterpret_cast<float*>(reinterpret_cast<std::uintptr_t>(player) + XORN(0xA134));
-#endif
 		if (cycle != 0.f) 
 		{
 			cycle = 0;

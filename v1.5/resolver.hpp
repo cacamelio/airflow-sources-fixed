@@ -83,48 +83,6 @@ struct resolver_info_t
 		}
 	} freestanding{};
 
-#ifdef LEGACY
-	int lby_breaker{};
-	int lby_update{};
-
-	struct move_t
-	{
-		float time{};
-		float lby{};
-
-		inline void reset()
-		{
-			time = 0.f;
-			lby = 0.f;
-		}
-	} move{};
-
-	struct lby_flicks_t
-	{
-		bool lby_breaker_failed = false;
-
-		float last_lby_value = 0.0f;
-		float next_lby_update = 0.0f;
-
-		int logged_lby_delta_score = 0;
-		float logged_lby_delta = 0.0f;
-
-		c_animation_layers old_layers[13]{};
-
-		inline void reset()
-		{
-			lby_breaker_failed = false;
-			last_lby_value = 0.f;
-			next_lby_update = 0.f;
-
-			logged_lby_delta_score = 0;
-			logged_lby_delta = 0.f;
-
-			for (auto& i : old_layers)
-				i = {};
-		}
-	} lby{};
-#endif
 
 	anim_record_t record{};
 
@@ -139,14 +97,6 @@ struct resolver_info_t
 
 		freestanding.reset();
 		jitter.reset();
-
-#ifdef LEGACY
-		lby_breaker = 0;
-		lby_update = 0;
-		lby.reset();
-		move.reset();
-		record.reset();
-#endif
 
 		for (auto& i : initial_layers)
 			i = {};

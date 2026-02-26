@@ -596,7 +596,6 @@ std::vector<rage_point_t> get_hitbox_points(int damage, std::vector<int>& hitbox
 		point.aim_point = aim_point;
 		point.predicted_eye_pos = predicted;
 
-#ifndef LEGACY
 		point.safety = [&]()
 		{
 			auto safety = 0;
@@ -618,7 +617,6 @@ std::vector<rage_point_t> get_hitbox_points(int damage, std::vector<int>& hitbox
 
 			return safety;
 		}();
-#endif
 
 		out.emplace_back(point);
 	}
@@ -887,11 +885,6 @@ bool hitchance(vec3_t eye_pos, rage_player_t& rage, const rage_point_t& point, a
 	if (weapon_accuracy_nospread && weapon_accuracy_nospread->get_bool())
 		return true;
 
-#ifdef LEGACY
-	if (EXPLOITS->enabled() && EXPLOITS->dt_bullet == 1)
-		return true;
-#endif
-
 	auto current = 0;
 	auto networked_vars = ENGINE_PREDICTION->get_networked_vars(HACKS->cmd->command_number);
 
@@ -992,7 +985,6 @@ void collect_damage_from_multipoints(int damage, vec3_t& predicted_eye_pos, rage
 		point.aim_point = multipoint.first;
 		point.predicted_eye_pos = points.predicted_eye_pos;
 
-#ifndef LEGACY
 		point.safety = [&]()
 		{
 			auto safety = 0;
@@ -1014,7 +1006,6 @@ void collect_damage_from_multipoints(int damage, vec3_t& predicted_eye_pos, rage
 
 			return safety;
 		}();
-#endif
 		rage->points_to_scan.emplace_back(point);
 	}
 
@@ -1130,10 +1121,9 @@ void c_ragebot::choose_best_point()
 				if (g_cfg.binds[force_body_b].toggled && !is_body)
 					continue;
 
-#ifndef LEGACY
 				if (g_cfg.binds[force_sp_b].toggled && point.safety < 5)
 					continue;
-#endif
+
 				if (point.safety == 5 && rage_config.prefer_safe)
 				{
 					point.found = true;
@@ -1603,21 +1593,8 @@ void c_ragebot::run()
 
 			add_shot_record(best_rage_player.player, best_point, best_record, ideal_start);
 
-#ifdef LEGACY
-			if (!ANTI_AIM->is_fake_ducking())
-			{
-				if (g_cfg.binds[hs_b].toggled || g_cfg.binds[dt_b].toggled)
-					*HACKS->send_packet = true;
-				else
-				{
-					if (!HACKS->client_state->choked_commands)
-						*HACKS->send_packet = false;
-				}
-			}
-#else
 			if ((g_cfg.binds[hs_b].toggled || !ANTI_AIM->is_fake_ducking()) && !*HACKS->send_packet)
 				*HACKS->send_packet = true;
-#endif
 		}
 	}
 

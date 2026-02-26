@@ -57,18 +57,6 @@ public:
     PAD(0x8);
     c_clock_drift_manager clock_drift_mgr;
     int delta_tick;
-
-#ifdef LEGACY
-    PAD(19240); 
-    int old_tickcount; 
-    float tick_remainder;
-    float frame_time;
-    int last_outgoing_command;
-    int choked_commands;
-    int last_command_ack; 
-    int last_server_tick; 
-    int command_ack;
-#else
     PAD(0x4);
     int view_entry;
     int player_slot;
@@ -93,7 +81,6 @@ public:
     PAD(0x4B);
     vec3_t viewangles;
     PAD(0xCC);
-#endif
 };
 
 class c_engine
@@ -333,20 +320,7 @@ public:
 class c_input
 {
 public:
-#ifdef LEGACY
-    void* vtable;
-    bool trackir;
-    bool mouse_init;
-    bool mouse_active;
-    bool joystick_adv_init;
 
-    PAD(0x2C);
-
-    void* keys;
-    PAD(0x6C);
-
-    bool camera_intercepting_mouse;
-#else
     PAD(0xC);
 
     bool trackir_available;
@@ -354,27 +328,13 @@ public:
     bool mouse_active;
 
     PAD(0x9A);
-#endif
     bool camera_in_third_person;
 
     PAD(0x2);
 
     vec3_t camera_offset;
 
-#ifdef LEGACY
-    bool camera_distance_move;
-    int camera_old_x;
-    int camera_old_y;
-    int camera_x;
-    int camera_y;
-    bool camera_is_orthographic;
-    vec3_t previous_view_angles;
-    vec3_t previous_view_angles_tilt;
-    float last_forward_move;
-    int clear_input_state;
-#else
     PAD(0x38);
-#endif
     c_user_cmd* commands;
     verified_cmd_t* verified_commands;
 
@@ -447,9 +407,8 @@ public:
             std::memset(this, 0, sizeof(*this));
         }
 
-#ifndef LEGACY
         std::int32_t next_slot;
-#endif
+
         c_base_entity* entity;
 
         union
@@ -474,9 +433,6 @@ public:
         int full_bloom_stencil_test_value;
         std::int32_t glow_style;
         std::int32_t screen_slot;
-#ifdef LEGACY
-        std::int32_t next_slot;
-#endif
         INLINE bool is_unused() const
         {
             return next_slot != entry_in_use;

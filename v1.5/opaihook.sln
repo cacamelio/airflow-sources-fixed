@@ -10,9 +10,6 @@ Global
 		Alpha|x86 = Alpha|x86
 		Beta|x86 = Beta|x86
 		Debug|x86 = Debug|x86
-		Legacy Beta|x86 = Legacy Beta|x86
-		Legacy Debug|x86 = Legacy Debug|x86
-		Legacy Live|x86 = Legacy Live|x86
 		Live|x86 = Live|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
@@ -22,12 +19,6 @@ Global
 		{5F68854C-01EB-435B-913E-139078CF39A0}.Beta|x86.Build.0 = Beta|Win32
 		{5F68854C-01EB-435B-913E-139078CF39A0}.Debug|x86.ActiveCfg = Debug|Win32
 		{5F68854C-01EB-435B-913E-139078CF39A0}.Debug|x86.Build.0 = Debug|Win32
-		{5F68854C-01EB-435B-913E-139078CF39A0}.Legacy Beta|x86.ActiveCfg = Legacy Beta|Win32
-		{5F68854C-01EB-435B-913E-139078CF39A0}.Legacy Beta|x86.Build.0 = Legacy Beta|Win32
-		{5F68854C-01EB-435B-913E-139078CF39A0}.Legacy Debug|x86.ActiveCfg = Legacy Debug|Win32
-		{5F68854C-01EB-435B-913E-139078CF39A0}.Legacy Debug|x86.Build.0 = Legacy Debug|Win32
-		{5F68854C-01EB-435B-913E-139078CF39A0}.Legacy Live|x86.ActiveCfg = Legacy Live|Win32
-		{5F68854C-01EB-435B-913E-139078CF39A0}.Legacy Live|x86.Build.0 = Legacy Live|Win32
 		{5F68854C-01EB-435B-913E-139078CF39A0}.Live|x86.ActiveCfg = Live|Win32
 		{5F68854C-01EB-435B-913E-139078CF39A0}.Live|x86.Build.0 = Live|Win32
 	EndGlobalSection

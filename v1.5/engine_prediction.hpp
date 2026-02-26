@@ -43,13 +43,8 @@ struct unpred_vars_t
 		ground_entity = HACKS->local->ground_entity();
 
 		// hardcoded because it doesn't parse with netvars
-#ifdef LEGACY
-		predicted_cmd = *(c_user_cmd**)((std::uintptr_t)HACKS->local + XORN(0x3314));
-		updated_cmd = *(c_user_cmd*)((std::uintptr_t)HACKS->local + XORN(0x326C));
-#else
 		predicted_cmd = *(c_user_cmd**)((std::uintptr_t)HACKS->local + XORN(0x3348));
 		updated_cmd = *(c_user_cmd*)((std::uintptr_t)HACKS->local + XORN(0x3298));
-#endif
 	}
 
 	INLINE void restore()
@@ -66,13 +61,8 @@ struct unpred_vars_t
 		HACKS->global_vars->curtime = curtime;
 		HACKS->global_vars->frametime = frametime;
 
-#ifdef LEGACY
-		* (c_user_cmd**)((std::uintptr_t)HACKS->local + XORN(0x3314)) = predicted_cmd;
-		*(c_user_cmd*)((std::uintptr_t)HACKS->local + XORN(0x326C)) = updated_cmd;
-#else
 		* (c_user_cmd**)((std::uintptr_t)HACKS->local + XORN(0x3348)) = predicted_cmd;
 		*(c_user_cmd*)((std::uintptr_t)HACKS->local + XORN(0x3298)) = updated_cmd;
-#endif
 	}
 
 	INLINE void reset() 

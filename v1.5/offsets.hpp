@@ -158,69 +158,6 @@ namespace offsets
 	inline memory::address_t interpolate_player;
 	inline memory::address_t reset_latched;
 
-#ifdef LEGACY
-	inline memory::address_t view_render;
-	inline memory::address_t glow_object_manager;
-	inline memory::address_t return_addr_loadout_allowed;
-	inline memory::address_t using_static_prop_debug;
-	inline memory::address_t build_transformations;
-	inline memory::address_t update_postscreen_effects;
-	inline memory::address_t get_sequence_activity;
-	inline memory::address_t modify_eye_position;
-	inline memory::address_t init_key_values;
-	inline memory::address_t want_reticle_shown;
-	inline memory::address_t update_all_viewmodel_addons;
-	inline memory::address_t get_viewmodel;
-	inline memory::address_t calc_view;
-	inline memory::address_t get_hud_ptr;
-	inline memory::address_t draw_fog;
-	inline memory::address_t cl_move;
-	inline memory::address_t clear_killfeed;
-	inline memory::address_t physics_simulate;
-	inline memory::address_t send_datagram;
-	inline memory::address_t list_leaves_in_box;
-	inline memory::address_t calc_viewmodel_view;
-	inline memory::address_t return_addr_cam_think;
-	inline memory::address_t send_net_msg;
-	inline memory::address_t return_addr_process_input;
-	inline memory::address_t host_shutdown;
-	inline memory::address_t destruct_voice_data_message;
-	inline memory::address_t msg_voice_data;
-	inline memory::address_t physics_run_think;
-	inline memory::address_t think;
-	inline memory::address_t post_think_physics;
-	inline memory::address_t simulate_player_simulated_entities;
-	inline memory::address_t game_rules;
-	inline memory::address_t return_addr_send_datagram_cl_move;
-	inline memory::address_t add_activity_modifier;
-	inline memory::address_t get_weapon_prefix;
-	inline memory::address_t find_mapping;
-	inline memory::address_t select_sequence_from_mods;
-	inline memory::address_t get_sequence_desc;
-	inline memory::address_t lookup_sequence;
-	inline memory::address_t get_sequence_linear_motion;
-	inline memory::address_t update_layer_order_preset;
-
-	inline memory::address_t ik_ctx_construct;
-	inline memory::address_t ik_ctx_destruct;
-	inline memory::address_t ik_ctx_init;
-	inline memory::address_t ik_ctx_update_targets;
-	inline memory::address_t ik_ctx_solve_dependencies;
-	inline memory::address_t bone_setup_init_pose;
-	inline memory::address_t accumulate_pose;
-	inline memory::address_t bone_setup_calc_autoplay_sequences;
-	inline memory::address_t bone_setup_calc_bone_adjust;
-
-	inline memory::address_t show_and_update_selection;
-	inline memory::address_t view_render_beams;
-	inline memory::address_t return_addr_show_radar;
-	inline memory::address_t calc_roaming_view;
-	inline memory::address_t return_addr_post_process;
-	inline memory::address_t cache_sequences;
-	inline memory::address_t setup_weapon_action;
-	inline memory::address_t notify_on_layer_change_cycle;
-
-#else
 	inline memory::address_t view_render;
 	inline memory::address_t glow_object_manager;
 	inline memory::address_t return_addr_loadout_allowed;
@@ -295,7 +232,6 @@ namespace offsets
 	inline memory::address_t setup_whole_body_action;
 	inline memory::address_t setup_flinch;
 	inline memory::address_t cache_sequences;
-#endif
 
 	extern void init();
 }

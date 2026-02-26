@@ -216,13 +216,11 @@ void c_grenade_prediction::calc_nade_path(c_base_combat_weapon* entity)
 	}
 
 	const auto handle = entity->get_ref_handle();
-#ifndef LEGACY
 	if (entity->explode_effect_tick_begin() || entity->nade_exploded() || client_class->class_id == CSmokeGrenadeProjectile && entity->smoke_effect_tick_begin())
 	{
 		list.erase(handle);
 		return;
 	}
-#endif
 
 	auto get_weapon_index = [&](int class_id)
 	{

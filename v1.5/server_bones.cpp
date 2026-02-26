@@ -31,10 +31,8 @@ void clamp_bones_info_t::store(c_cs_player* player) {
 	if (!collideable)
 		return;
 
-#ifndef LEGACY
 	collision_change_time = player->collision_change_time();
 	collision_change_origin = player->collision_change_origin();
-#endif
 
 	auto& base_origin = player == HACKS->local ? player->get_abs_origin() : player->origin();
 	origin = base_origin;
@@ -303,11 +301,7 @@ void c_bone_builder::store(c_cs_player* player, matrix3x4_t* matrix, int mask, c
 	this->matrix = matrix;
 	this->mask = mask;
 
-#ifdef LEGACY
-	time = player->sim_time();
-#else
 	time = player == HACKS->local ? HACKS->predicted_time : player->sim_time();
-#endif
 	attachments = false;
 	ik_ctx = false;
 	dispatch = true;
@@ -409,7 +403,6 @@ void c_bone_builder::setup()
 		rot_mat.contact_transforms(matrix[hitbox->bone]);
 	}
 
-#ifndef LEGACY
 	if (animating == HACKS->local)
 	{
 		clamp_bones_info_t info{};
@@ -417,7 +410,6 @@ void c_bone_builder::setup()
 
 		clamp_bones_in_bbox(animating, matrix, mask, time, animating->eye_angles(), info);
 	}
-#endif
 }
 
 INLINE bool can_be_animated(c_cs_player* player)

@@ -8,13 +8,8 @@ INLINE i_material* create_material(const char* material_name, const char* materi
 {
 	c_key_values* key_values = new c_key_values;
 
-#ifdef LEGACY
-	offsets::init_key_values.cast<void(__thiscall*)(void*, const char*)>()(key_values, shader_type);
-	offsets::load_from_buffer.cast<void(__thiscall*)(void*, const char*, const char*, void*, const char*, void*)>()(key_values, material_name, material_data, NULL, NULL, NULL);
-#else
 	offsets::init_key_values.cast<void(__thiscall*)(void*, const char*, int, int)>()(key_values, shader_type, NULL, NULL);
 	offsets::load_from_buffer.cast<void(__thiscall*)(void*, const char*, const char*, void*, const char*, void*, void*)>()(key_values, material_name, material_data, NULL, NULL, NULL, NULL);
-#endif
 	auto material = HACKS->material_system->create_material(material_name, key_values);
 	material->increment_reference_count();
 

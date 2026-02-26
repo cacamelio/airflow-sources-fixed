@@ -26,13 +26,8 @@ public:
 
 		movedata = **(c_move_data**)((std::uintptr_t)HACKS->game_movement + 8);
 
-#ifdef LEGACY
-		cmd_ptr = *(c_user_cmd**)((std::uintptr_t)HACKS->local + XORN(0x3314));
-		pred_cmd = *(c_user_cmd*)((std::uintptr_t)HACKS->local + XORN(0x326C));
-#else
 		cmd_ptr = *(c_user_cmd**)((std::uintptr_t)HACKS->local + XORN(0x3348));
 		pred_cmd = *(c_user_cmd*)((std::uintptr_t)HACKS->local + XORN(0x3298));
-#endif
 
 		old_origin = *(vec3_t*)((std::uintptr_t)HACKS->local + XORN(0x3AC));
 	}
@@ -47,13 +42,8 @@ public:
 
 		**(c_move_data**)((std::uintptr_t)HACKS->game_movement + 8) = std::move(movedata);
 
-#ifdef LEGACY
-		* (c_user_cmd**)((std::uintptr_t)HACKS->local + XORN(0x3314)) = cmd_ptr;
-		*(c_user_cmd*)((std::uintptr_t)HACKS->local + XORN(0x326C)) = std::move(pred_cmd);
-#else
 		* (c_user_cmd**)((std::uintptr_t)HACKS->local + XORN(0x3348)) = cmd_ptr;
 		*(c_user_cmd*)((std::uintptr_t)HACKS->local + XORN(0x3298)) = std::move(pred_cmd);
-#endif
 
 		* (vec3_t*)((std::uintptr_t)HACKS->local + XORN(0x3AC)) = std::move(old_origin);
 	}

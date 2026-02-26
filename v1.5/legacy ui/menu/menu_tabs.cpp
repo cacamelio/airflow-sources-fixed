@@ -132,21 +132,6 @@ const char* weapon_configs[] = {
 	  xor_strs::weapon_awp.c_str(),
 };
 
-#ifdef LEGACY
-const char* knife_models[]{
-	xor_strs::knife_default.c_str(),
-	xor_strs::knife_bayonet.c_str(),
-	xor_strs::knife_flip.c_str(),
-	xor_strs::knife_gut.c_str(),
-	xor_strs::knife_karambit.c_str(),
-	xor_strs::knife_m9.c_str(),
-	xor_strs::knife_huntsman.c_str(),
-	xor_strs::knife_falchion.c_str(),
-	xor_strs::knife_bowie.c_str(),
-	xor_strs::knife_butterfly.c_str(),
-};
-
-#else
 const char* knife_models[]{
 	xor_strs::knife_default.c_str(),
 	xor_strs::knife_bayonet.c_str(),
@@ -169,7 +154,6 @@ const char* knife_models[]{
 	xor_strs::knife_stiletto.c_str(),
 	xor_strs::knife_talon.c_str(),
 };
-#endif
 
 const char* defensive_aa_mode[]
 {
@@ -622,11 +606,7 @@ void c_menu::draw_ui_items()
 
 		auto old_pos = ImGui::GetCursorPos();
 
-#ifdef LEGACY
-		auto text = /*XOR("Please turn off ") + type +*/ type2 + XOR(" is not available on legacy!");
-#else
 		auto text = /*XOR("Please turn off ") + type +*/ XOR("Currently ") + type2 + XOR(" is under construction!");
-#endif
 		auto text_size = ImGui::CalcTextSize(text.c_str());
 
 		auto half_text_size = ImVec2(text_size.x / 2.f, text_size.y / 2.f);
@@ -696,9 +676,7 @@ void c_menu::draw_ui_items()
 					{
 						key_bind(CXOR("Double tap"), g_cfg.binds[dt_b]);
 
-#ifndef LEGACY
 						key_bind(CXOR("Hide shots"), g_cfg.binds[hs_b]);
-#endif
 
 						checkbox(CXOR("Defensive in air"), &g_cfg.rage.air_defensive);
 					}
@@ -709,9 +687,7 @@ void c_menu::draw_ui_items()
 						key_bind(CXOR("Override damage"), g_cfg.binds[override_dmg_b]);
 						key_bind(CXOR("Force body"), g_cfg.binds[force_body_b]);
 
-#ifndef LEGACY
 						key_bind(CXOR("Force safe point"), g_cfg.binds[force_sp_b]);
-#endif
 
 					}
 					end_child;
@@ -851,9 +827,7 @@ void c_menu::draw_ui_items()
 				begin_child(CXOR("Main"))
 				{
 					checkbox(CXOR("Enable##antiaim"), &g_cfg.antihit.enable);
-#ifndef LEGACY
 					//checkbox(CXOR("Silent on-shot##antiaim"), &g_cfg.antihit.silent_onshot);
-#endif
 					checkbox(CXOR("At targets##antiaim"), &g_cfg.antihit.at_targets);
 
 					combo(CXOR("Pitch"), &g_cfg.antihit.pitch, aa_pitch, IM_ARRAYSIZE(aa_pitch));
@@ -873,7 +847,6 @@ void c_menu::draw_ui_items()
 				}
 				end_child;
 
-#ifndef LEGACY
 				begin_child(CXOR("Defensive Anti-Aims"))
 				{
 					checkbox(CXOR("Change pitch##antiaim"), &g_cfg.antihit.def_pitch);
@@ -882,7 +855,6 @@ void c_menu::draw_ui_items()
 					combo(CXOR("Defensive type##antiaim"), &g_cfg.antihit.def_aa_mode, defensive_aa_mode, IM_ARRAYSIZE(defensive_aa_mode));
 				}
 				end_child;
-#endif
 			}
 			ImGui::NextColumn();
 			{
@@ -903,7 +875,6 @@ void c_menu::draw_ui_items()
 				}
 				end_child;
 
-#ifndef LEGACY
 				begin_child(CXOR("Enhancement"))
 				{
 				//	checkbox(CXOR("Jitter move"), &g_cfg.antihit.jitter_move);
@@ -912,16 +883,11 @@ void c_menu::draw_ui_items()
 					checkbox(CXOR("Randomize fake amount"), &g_cfg.antihit.random_amount);
 				}
 				end_child;
-#endif
 
 				begin_child(CXOR("Movement"))
 				{
-#ifdef LEGACY
-					key_bind(CXOR("Fake walk"), g_cfg.binds[sw_b]);
-#else
 					key_bind(CXOR("Fake duck"), g_cfg.binds[fd_b]);
 					key_bind(CXOR("Slow walk"), g_cfg.binds[sw_b]);
-#endif
 				}
 				end_child;
 
@@ -929,18 +895,12 @@ void c_menu::draw_ui_items()
 				{
 					checkbox(CXOR("Enable##fake_angle"), &g_cfg.antihit.desync);
 					key_bind(CXOR("Inverter"), g_cfg.binds[inv_b]);
-#ifndef LEGACY
 					combo(CXOR("Fake type"), &g_cfg.antihit.desync_mode, aa_desync_type, IM_ARRAYSIZE(aa_desync_type));
 					slider_int(CXOR("Left amount##desync"), &g_cfg.antihit.desync_left, 0, 58, CXOR("%d"));
 					slider_int(CXOR("Right amount##desync"), &g_cfg.antihit.desync_right, 0, 58, CXOR("%d"));
-#else
-				//	combo(CXOR("Breaker type"), &g_cfg.antihit.desync_mode, aa_desync_type, IM_ARRAYSIZE(aa_desync_type));
-					slider_int(CXOR("LBY Delta##desync"), &g_cfg.antihit.desync_left, 0, 180, CXOR("%d"));
-#endif
 				}
 				end_child;
 
-#ifndef LEGACY
 				begin_child(CXOR("Extended fake"))
 				{
 					checkbox(CXOR("Enable##distortion"), &g_cfg.antihit.distortion);
@@ -950,7 +910,6 @@ void c_menu::draw_ui_items()
 					slider_int(CXOR("Height##body_lean"), &g_cfg.antihit.distortion_pitch, 0, 50);
 				}
 				end_child;
-#endif
 			}
 		}
 		break;
@@ -1517,7 +1476,6 @@ void c_menu::draw_ui_items()
 				}
 				end_child;
 
-#ifndef LEGACY
 				begin_child(CXOR("Player"))
 				{
 					combo(CXOR("Mask"), &g_cfg.skins.masks, masks, IM_ARRAYSIZE(masks));
@@ -1533,7 +1491,6 @@ void c_menu::draw_ui_items()
 						input_text(CXOR("Model path##agent_t"), g_cfg.skins.custom_model_t, 128);
 				}
 				end_child;
-#endif
 			}
 			ImGui::NextColumn();
 			{

@@ -279,22 +279,8 @@ namespace game_movement
 
 		vec3_t stop = direction * -stop_speed;
 
-#ifdef LEGACY
-		if (stop_speed > 13.f)
-		{
-			HACKS->cmd->forwardmove = stop.x;
-			HACKS->cmd->sidemove = stop.y;
-		}
-		else
-		{
-			HACKS->cmd->forwardmove = 0.f;
-			HACKS->cmd->sidemove = 0.f;
-		}
-
-#else
 		HACKS->cmd->forwardmove = stop.x;
 		HACKS->cmd->sidemove = stop.y;
-#endif
 	}
 
 	INLINE unsigned int physics_solid_mask_for_entity(c_cs_player* entity)

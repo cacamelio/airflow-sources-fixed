@@ -386,11 +386,7 @@ namespace xor_strs
 		aa_jitter_random = XOR("Random");
 		aa_jitter_3way = XOR("3-Way");
 
-#ifdef LEGACY
-		aa_desync_jitter = XOR("Double");
-#else
 		aa_desync_jitter = XOR("Jitter");
-#endif
 
 		aa_fakelag_max = XOR("Maximum");
 		aa_fakelag_jitter = XOR("Jitter");

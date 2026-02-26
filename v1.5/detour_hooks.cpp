@@ -194,11 +194,7 @@ namespace hooks::detour
 		// prevent delays or other issues
 
 		// TO-DO: remove hardcoded offset
-#ifdef LEGACY
-		auto events = *reinterpret_cast<c_event_info**>(reinterpret_cast<std::uintptr_t>(HACKS->client_state) + XORN(0x4DEC));
-#else
 		auto events = *reinterpret_cast<c_event_info**>(reinterpret_cast<std::uintptr_t>(HACKS->client_state) + XORN(0x4E6C));
-#endif
 		if (events) 
 		{
 			auto iter = events;
@@ -297,12 +293,10 @@ namespace hooks::detour
 		RESTORE(ecx->jiggle_bones_enabled());
 		RESTORE(ecx->use_new_animstate());
 
-#ifndef LEGACY
 		RESTORE(*(int*)((uintptr_t)ecx + 0x26B0)); // mask ptr
 
 		// don't call clamp bones in bbox when it's not needed
 		*(int*)((uintptr_t)ecx + 0x26B0) = 0;
-#endif
 
 		// don't allow game to procees attachments shake (jiggle)
 		ecx->jiggle_bones_enabled() = false;
@@ -786,7 +780,6 @@ namespace hooks::detour
 		return;
 	}
 
-#ifndef LEGACY
 	vec3_t* __fastcall eye_angles(void* ecx, void* edx)
 	{
 		static auto original = hooker::get_original(&eye_angles);
@@ -826,7 +819,6 @@ namespace hooks::detour
 
 		return original(ecx, edx, collision_group, contents_mask);
 	}
-#endif
 
 	INLINE void init() 
 	{
@@ -872,11 +864,9 @@ namespace hooks::detour
 		ADD_DETOUR(interpolate_player);
 		//ADD_DETOUR(reset_latched);
 
-#ifndef LEGACY
 		//	ADD_DETOUR(trace_filter_to_head_collision);
 		ADD_DETOUR(eye_angles);
 		ADD_DETOUR(on_bbox_change_callback);
 		ADD_DETOUR(clamp_bones_in_bbox);
-#endif
 	}
 }

@@ -1765,9 +1765,7 @@ public:
 	bool smooth_height_valid{};
 	float last_time_velocity_over_ten{};
 
-#ifndef LEGACY
 	PAD(4);
-#endif
 
 	float aim_yaw_min{};
 	float aim_yaw_max{};
@@ -1808,87 +1806,6 @@ public:
 
 struct weapon_info_t
 {
-#ifdef LEGACY
-public:
-	PAD(0x4);
-public:
-	const char* weapon_name{};
-
-	PAD(0xC);
-
-	int max_ammo_1{};
-	int max_ammo_2{};
-	int default_clip1{};
-	int default_clip2{};
-	int max_reserve{};
-
-	PAD(0x4);
-
-	const char* world_model{};
-	const char* view_model{};
-	const char* world_dropped_model{};
-
-	PAD(0x48);
-
-	const char* ammo_type{};
-
-	PAD(4);
-
-	const char* hud_name{};
-	const char* deprecated_weapon_name{};
-
-	PAD(56);
-	int		weapon_type{};
-	int		in_game_price{};
-	int		kill_award{};
-	const char* animation_prefix{};
-	float	cycletime{};
-	float	cycletime_alt{};
-	float	time_to_idle{};
-	float	idle_interval{};
-	bool	is_full_auto{};
-
-	PAD(0x3);
-
-	int		dmg{};
-	float	armor_ratio{};
-	int		bullets{};
-	float	penetration{};
-	float	flinch_velocity_modifier_large{};
-	float	flinch_velocity_modifier_small{};
-	float	range{};
-	float	range_modifier{};
-	float	throw_velocity{};
-
-	PAD(0xC);
-
-	bool	has_silencer{};
-	PAD(0x3);
-
-	const char* silencer_model{};
-	int		crosshair_min_distance{};
-	int		crosshair_delta_distance{};
-	float	max_speed{};
-	float	max_speed_alt{};
-	float	spread{};
-	float	spread_alt{};
-	float	inaccuracy_crouch{};
-	float	inaccuracy_crouch_alt{};
-	float	inaccuracy_stand{};
-	float	inaccuracy_stand_alt{};
-	float	inaccuracy_jump_initial{};
-	float	inaccuracy_jump{};
-	float	inaccuracy_jump_alt{};
-	float	inaccuracy_land{};
-	float	inaccuracy_land_alt{};
-	float	inaccuracy_ladder{};
-	float	inaccuracy_ladder_alt{};
-	float	inaccuracy_fire{};
-	float	inaccuracy_fire_alt{};
-	float	inaccuracy_move{};
-	float	inaccuracy_move_alt{};
-	float	inaccuracy_reload{};
-#else
 	PAD(20);
 	std::uint32_t max_ammo_1;
 	PAD(12);
@@ -1929,7 +1846,6 @@ public:
 	bool unk;
 	PAD(4);
 	bool hide_viewmodel_in_zoom;
-#endif
 };
 #pragma endregion
 
@@ -2010,26 +1926,6 @@ struct beam_info_t
 #pragma endregion
 
 #pragma region HUD
-#ifdef LEGACY
-struct notice_text_t
-{
-	wchar_t text[512];
-	int unk0;
-	float unk1;
-	float unk2;
-	int unk3;
-	float time;
-	int unk4;
-	float fade;
-	int unk5;
-};
-
-struct kill_feed_t
-{
-	PAD(0x7C);
-	c_utl_vector<notice_text_t> notices{};
-};
-#else
 class c_ui_panel
 {
 public:
@@ -2038,7 +1934,6 @@ public:
 	VFUNC(has_class(const char* name), bool(__thiscall*)(decltype(this), const char*), 139, name);
 	VFUNC(set_attribute_float(const char* name, float value), void(__thiscall*)(void*, const char*, float), 288, name, value);
 };
-#endif
 #pragma rendregion
 
 #pragma region STATIC_PROPS
@@ -2052,12 +1947,6 @@ public:
 class c_static_prop
 {
 public:
-#ifdef LEGACY
-	PAD(72);
-	c_client_alpha_property* alpha_property;
-	PAD(112);
-	vec4_t diffuse_modulation;
-#else
 	PAD(16);
 	vec3_t origin;
 	PAD(24);
@@ -2066,7 +1955,6 @@ public:
 	c_client_alpha_property* alpha_property; //0x004C
 	PAD(160);
 	vec4_t diffuse_modulation;
-#endif
 };
 
 class c_static_prop_manager

@@ -108,7 +108,6 @@ void threaded_update_tick(c_lag_comp* ptr, c_cs_player* player, float& fresh_tic
 	{
 		i.valid_lc = ptr->is_tick_valid(i.shifting, false, i.sim_time);
 
-#ifndef LEGACY	
 		clamp_bones_info_t clamp_info{};
 		clamp_info.store(&i);
 
@@ -128,7 +127,6 @@ void threaded_update_tick(c_lag_comp* ptr, c_cs_player* player, float& fresh_tic
 
 		// update zero matrix
 		ptr->clamp_matrix(player, &i.matrix_zero, fresh_tick, rec_angles, clamp_info);
-#endif
 	}
 }
 

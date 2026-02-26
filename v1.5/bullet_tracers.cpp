@@ -257,11 +257,7 @@ void c_bullet_tracers::render_tracers()
 	if (!HACKS->local || !HACKS->in_game)
 		return;
 
-#ifdef LEGACY
-	auto& impact_list = *(c_utl_vector<client_verify_t>*)((std::uintptr_t)HACKS->local + 0xBA84);
-#else
 	auto& impact_list = *(c_utl_vector<client_verify_t>*)((std::uintptr_t)HACKS->local + 0x11C50);
-#endif
 
 	if (g_cfg.misc.impacts)
 	{

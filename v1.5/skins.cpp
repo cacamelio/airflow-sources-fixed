@@ -41,45 +41,13 @@ namespace skin_changer
 	float last_update_time = 0.f;
 
 	constexpr auto mask_flags = 0x10000;
-
-#ifdef LEGACY
-	constexpr auto max_knifes = 11;
-#else
 	constexpr auto max_knifes = 20;
-#endif
 
 	constexpr auto max_gloves = 7;
 	const char* default_mask = CXOR("models/player/holiday/facemasks/facemask_battlemask.mdl");
 
 	std::unordered_map<std::string, int> weapon_indexes{};
 
-#ifdef LEGACY
-	std::array< std::string, max_knifes - 1 > knife_models{
-		XOR("models/weapons/v_knife_bayonet.mdl"),
-			XOR("models/weapons/v_knife_flip.mdl"),
-			XOR("models/weapons/v_knife_gut.mdl"),
-			XOR("models/weapons/v_knife_karam.mdl"),
-			XOR("models/weapons/v_knife_m9_bay.mdl"),
-			XOR("models/weapons/v_knife_tactical.mdl"),
-			XOR("models/weapons/v_knife_falchion_advanced.mdl"),
-			XOR("models/weapons/v_knife_survival_bowie.mdl"),
-			XOR("models/weapons/v_knife_butterfly.mdl"),
-			XOR("models/weapons/v_knife_push.mdl"),
-	};
-
-	std::array< std::string, max_knifes - 1 > world_knife_models{
-		XOR("models/weapons/w_knife_bayonet.mdl"),
-			XOR("models/weapons/w_knife_flip.mdl"),
-			XOR("models/weapons/w_knife_gut.mdl"),
-			XOR("models/weapons/w_knife_karam.mdl"),
-			XOR("models/weapons/w_knife_m9_bay.mdl"),
-			XOR("models/weapons/w_knife_tactical.mdl"),
-			XOR("models/weapons/w_knife_falchion_advanced.mdl"),
-			XOR("models/weapons/w_knife_survival_bowie.mdl"),
-			XOR("models/weapons/w_knife_butterfly.mdl"),
-			XOR("models/weapons/w_knife_push.mdl"),
-	};
-#else
 	std::array<std::string, max_knifes - 1> knife_models
 	{
 		XOR("models/weapons/v_knife_bayonet.mdl"),
@@ -126,7 +94,6 @@ namespace skin_changer
 			XOR("models/weapons/w_knife_stiletto.mdl"),
 			XOR("models/weapons/w_knife_widowmaker.mdl"),
 	};
-#endif
 
 	std::array<std::string, max_gloves> gloves
 	{
@@ -190,22 +157,6 @@ namespace skin_changer
 		{ 503, { CXOR("models/weapons/v_knife_css.mdl"), CXOR("knife_css"), 14 } }
 	};
 
-#ifdef LEGACY
-	std::array<knife_id_t, max_knifes> knifes
-	{
-		knife_id_t{ WEAPON_NONE, XOR("def") },
-			knife_id_t{ WEAPON_KNIFE_BAYONET, XOR("bayonet") },
-			knife_id_t{ WEAPON_KNIFE_FLIP, XOR("flip") },
-			knife_id_t{ WEAPON_KNIFE_GUT, XOR("gut") },
-			knife_id_t{ WEAPON_KNIFE_KARAMBIT, XOR("karambit") },
-			knife_id_t{ WEAPON_KNIFE_M9_BAYONET, XOR("m9 bayonet") },
-			knife_id_t{ WEAPON_KNIFE_TACTICAL, XOR("tactical") },
-			knife_id_t{ WEAPON_KNIFE_FALCHION, XOR("falchion") },
-			knife_id_t{ WEAPON_KNIFE_SURVIVAL_BOWIE, XOR("bowie") },
-			knife_id_t{ WEAPON_KNIFE_BUTTERFLY, XOR("butterfly") },
-			knife_id_t{ WEAPON_KNIFE_PUSH, XOR("push") },
-	};
-#else
 	std::array<knife_id_t, max_knifes> knifes
 	{
 		knife_id_t{ WEAPON_NONE, XOR("def") },
@@ -229,7 +180,6 @@ namespace skin_changer
 			knife_id_t{ WEAPON_KNIFE_STILETTO, XOR("stiletto") },
 			knife_id_t{ WEAPON_KNIFE_WIDOWMAKER, XOR("widowmaker") }
 	};
-#endif
 
 	enum knife_sequcence_t : int
 	{
@@ -444,7 +394,6 @@ namespace skin_changer
 	// special thakns to infirms1337 for this code
 	__forceinline void mask_changer(int stage)
 	{
-#ifndef LEGACY
 		static auto current_mask = *offsets::mask_ptr.cast< char*** >();
 		static int old_mask = -1;
 
@@ -475,7 +424,6 @@ namespace skin_changer
 			if (HACKS->local->addon_bits().has(mask_flags))
 				HACKS->local->addon_bits().remove(mask_flags);
 		}
-#endif
 	}
 
 	inline int get_original_model_idx()
@@ -489,7 +437,6 @@ namespace skin_changer
 
 	__forceinline void agent_changer(int stage)
 	{
-#ifndef LEGACY
 		if (!HACKS->local || !HACKS->local->is_alive() || stage != FRAME_NET_UPDATE_POSTDATAUPDATE_START && stage != FRAME_RENDER_END)
 			return;
 
@@ -564,7 +511,6 @@ namespace skin_changer
 			return;
 
 		HACKS->local->set_model_index(idx);
-#endif
 	}
 
 	__forceinline void init_parser()
@@ -996,11 +942,7 @@ namespace skin_changer
 	{
 		static auto m_Item = netvars::get_offset(HASH("DT_BaseCombatWeapon"), HASH("m_Item"));
 
-#ifdef LEGACY
-		* (bool*)((uintptr_t)weapon + 0x32DD) = weapon->fallback_paint_kit() <= 0;
-#else
 		* (bool*)((uintptr_t)weapon + 0x3370) = false;
-#endif
 
 		auto& vec0 = *(c_utl_vector< ret_counted_t* >*)((uintptr_t)weapon + m_Item + 0x14);
 		for (int i{}; i < vec0.count(); ++i)
@@ -1014,11 +956,7 @@ namespace skin_changer
 
 		vec1.remove_count();
 
-#ifdef LEGACY
-		auto& vec2 = *(c_utl_vector< ret_counted_t* >*)((uintptr_t)weapon + m_Item + 0x220);
-#else
 		auto& vec2 = *(c_utl_vector< ret_counted_t* >*)((uintptr_t)weapon + m_Item + 0x230);
-#endif
 		for (int i{}; i < vec2.count(); ++i)
 		{
 			auto& element = vec2.base()[i];
@@ -1036,28 +974,16 @@ namespace skin_changer
 		using fn = void(__thiscall*)(void*, const int);
 		memory::get_virtual(networkable, 7).cast<fn>()(networkable, 0);
 		memory::get_virtual(networkable, 5).cast<fn>()(networkable, 0);
-
-#ifdef LEGACY
-		auto hud_selection = (void*)offsets::find_hud_element.cast<DWORD(__thiscall*)(void*, const char*)>()(*offsets::get_hud_ptr.cast< uintptr_t** >(),
-			CXOR("SFWeaponSelection"));
-
-		if (!hud_selection)
-			return;
-
-		offsets::show_and_update_selection.cast<void(__thiscall*)(void*, int, c_base_combat_weapon*, bool)>()(hud_selection, 0, weapon, false);
-#endif
 	}
 
 	__forceinline void force_update_hud()
 	{
-#ifndef LEGACY
 		auto hud_base = offsets::find_hud_element.cast<DWORD(__thiscall*)(void*, const char*)>()
 			(*offsets::get_hud_ptr.cast< uintptr_t** >(), CXOR("CCSGO_HudWeaponSelection"));
 		auto hud_weapons = (int*)hud_base - 0x28;
 
 		for (auto i = 0; i < *(hud_weapons + 0x20); i++)
 			i = offsets::clear_hud_weapons.cast< int(__thiscall*)(int*, int) >()(hud_weapons, i);
-#endif
 	}
 
 	__forceinline void glove_changer()
